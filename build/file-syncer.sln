@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28010.2050
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "focus-stacker", "file-syncer\file-syncer.vcxproj", "{94D95DB7-52A8-4830-8D4D-02229B11BA3D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{94D95DB7-52A8-4830-8D4D-02229B11BA3D}.Debug|x64.ActiveCfg = Debug|x64
+		{94D95DB7-52A8-4830-8D4D-02229B11BA3D}.Debug|x64.Build.0 = Debug|x64
+		{94D95DB7-52A8-4830-8D4D-02229B11BA3D}.Release|x64.ActiveCfg = Release|x64
+		{94D95DB7-52A8-4830-8D4D-02229B11BA3D}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {DA3C7E0A-9443-43DA-A4C6-D06BCD80F595}
+	EndGlobalSection
+EndGlobal
