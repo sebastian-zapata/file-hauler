@@ -3,11 +3,11 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LocalDebuggerWorkingDirectory>$(OutputPath)</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerCommandArguments>-s="//192.168.0.7/shared" -d="F:/scans/shared" -t="move" -o="overwrite-if-newer" --loop</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>-s="//192.168.0.7/shared" -d="F:/scans/shared" -t="move" -o="overwrite-if-newer" --loop --verbose</LocalDebuggerCommandArguments>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LocalDebuggerWorkingDirectory>$(OutputPath)</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerCommandArguments>-s="//192.168.0.7/shared" -d="F:/scans/shared" -t="move" -o="overwrite-if-newer" --loop</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>-s="//192.168.0.7/shared" -d="F:/scans/shared" -t="move" -o="overwrite-if-newer" --loop --verbose</LocalDebuggerCommandArguments>
   </PropertyGroup>
 </Project>
