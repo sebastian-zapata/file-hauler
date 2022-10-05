@@ -10,9 +10,10 @@
 #include <chrono>
 
 
-Syncer::Syncer(const Path& srcDirPath, const Path& dstDirPath)
+Syncer::Syncer(const Path& srcDirPath, const Path& dstDirPath, bool verbose)
 	: m_srcDirPath(srcDirPath)
 	, m_dstDirPath(dstDirPath)
+	, m_verbose(verbose)
 {
 }
 
@@ -22,50 +23,82 @@ Syncer::~Syncer()
 }
 
 
-bool Syncer::sync(bool removeFilesFromSource, ActionDuplicateFile actionDuplicateFile)
+Result Syncer::sync(bool removeFilesFromSource, OverwriteMode overwriteMode)
 {
-	///
-	/// TODO: verify if file already exists in destination. If so, verify the timestamp and if it's an
-	/// old version of the file, replace it.. Or better yet, let the user decide what to do in those
-	/// cases.
-	///
+	//
+	// TODO: verify if file already exists in destination. If so, verify the timestamp and if it's an
+	// old version of the file, replace it.. Or better yet, let the user decide what to do in those
+	// cases.
+	//
 
 	namespace fs = std::filesystem;
 	using std::cout;
 
+	bool anyFileTransfered = false;
 	try
 	{
 		if (!fs::exists(m_srcDirPath))
 		{
-			cout << "Source path does not exist or cannot not be accessed" << "\n";
-			return false;
+			cout << "Source path does not exist or cannot not be accessed\n";
+
+			return Result::Code::SourceDirectoryDoesNotExist;
 		}
 
 		if (!fs::exists(m_dstDirPath))
 		{
-			cout << "Destination path does not exist or cannot not be accessed" << "\n";
-			return false;
+			cout << "Destination path does not exist or cannot not be accessed\n";
+
+			return Result::Code::DestinationDirectoryDoesNotExist;
 		}
 
 		std::vector<Path> srcFilePaths;
 		util::getFilesInFolder(m_srcDirPath, srcFilePaths, {/* all file extensions */ }, false, true);
 
-		for (const auto& srcFilePath : srcFilePaths)
+		for (const auto& filePathInSrc : srcFilePaths)
 		{
-			Path filePathRelative = srcFilePath.lexically_relative(m_srcDirPath);
-			Path dstFilePath = m_dstDirPath / filePathRelative;
+			Path filePathRelative = filePathInSrc.lexically_relative(m_srcDirPath);
+			Path filePathInDst = m_dstDirPath / filePathRelative;
 			Path dirPathRelative = filePathRelative.parent_path();
 			Path dirPathInDst = m_dstDirPath / dirPathRelative;
 			Path dirPathInSrc = m_srcDirPath / dirPathRelative;
 
-			/// create folder in destination if it doesn't exist
+			// if file in destination already exists:
+			if (fs::exists(filePathInDst))
+			{
+				switch (overwriteMode)
+				{
+					case OverwriteMode::Skip:
+					{
+						continue; // skip file, continue to next iteration
+
+						break;
+					}
+					case OverwriteMode::OverwriteIfNewer:
+					{
+						bool notNewFile = fs::last_write_time(filePathInDst) >= fs::last_write_time(filePathInSrc);
+					
+						if (notNewFile)
+							continue; // skip file, continue to next iteration
+
+						break;
+					}
+					case OverwriteMode::AlwaysOverwrite:
+					default:
+					{
+						// do nothing, continue with the transfer (replace file)
+						break;
+					}
+				}
+			}
+
+			// create folder in destination if it doesn't exist
 			if (!fs::exists(dirPathInDst))
 			{
 				fs::create_directories(dirPathInDst);
 				printTask("Directory creation", dirPathRelative.string());
 			}
 
-			/// copy file
+			// copy file
 	#if 0
 			for (size_t i = 0; i <= 100; i++)
 			{
@@ -74,78 +107,90 @@ bool Syncer::sync(bool removeFilesFromSource, ActionDuplicateFile actionDuplicat
 				std::this_thread::sleep_for(std::chrono::milliseconds(25));
 			}
 	#else
-			/// printTask("File syncing", filePathRelative.string(), 0);
+			// printTask("File syncing", filePathRelative.string(), 0);
 
-			/// open files
-			std::ifstream srcFile = std::ifstream(srcFilePath, std::ios::binary);
-			std::ofstream dstFile = std::ofstream(dstFilePath, std::ios::binary);
+			// open files
+			std::ifstream srcFile;
+			std::ofstream dstFile;
 
-			/// check if files were opened correctly
+			// check if files were opened correctly
+			srcFile = std::ifstream(filePathInSrc, std::ios::binary | std::ios::in | std::ios::out);
+			if (srcFile.fail())
 			{
-				if (srcFile.fail())
-				{
-					std::cout << "Failed to open file: " << srcFilePath.string() << "\n";
-					return false;
-				}
-				if (dstFile.fail())
-				{
-					std::cout << "Failed to create file: " << dstFilePath.string() << "\n";
-					return false;
-				}
+				if (m_verbose)
+					cout << "Failed to open file: " << filePathInSrc.string() << ". Skipping file...\n";
+
+				return Result::Code::CouldNotOpenSourceFile;
 			}
 
-			/// transfer bytes in chunks
-			size_t srcFileSize = static_cast<size_t>(std::filesystem::file_size(srcFilePath));
+			dstFile = std::ofstream(filePathInDst, std::ios::binary | std::ios::out);
+			if (dstFile.fail())
 			{
-				if (!copyBytes(srcFile, dstFile, srcFileSize, &Syncer::progressCallback,
-					&filePathRelative.string()))
-				{
-					cout << "Failed to copy bytes from" << srcFilePath.string() << " to "
-							<< dstFilePath.string() << "\n";
-					return false;
-				}
+				if (m_verbose)
+					cout << "Failed to create file: " << filePathInDst.string() << ". Skipping file...\n";
+
+				srcFile.close();
+
+				return Result::Code::CouldNotCreateDestinationFile;
 			}
 
-			/// close files
+			// transfer bytes in chunks
+			size_t srcFileSize = static_cast<size_t>(std::filesystem::file_size(filePathInSrc));
+			if (!copyBytes(srcFile, dstFile, srcFileSize, &Syncer::progressCallback,
+				&filePathRelative.string()))
+			{
+				cout << "Failed to copy bytes from" << filePathInSrc.string() << " to "
+						<< filePathInDst.string() << "\n";
+
+				return Result::Code::CouldNotTransferBytes;
+			}
+
+			// close files
 			{
 				dstFile.close();
 				srcFile.close();
 			}
 
-			/// printTask("File syncing", filePathRelative.string(), 100);
+			// printTask("File syncing", filePathRelative.string(), 100);
 	#endif
 
-			/// verify file integrity and delete it from source
-			size_t dstFileSize = static_cast<size_t>(std::filesystem::file_size(dstFilePath));
+			// verify file integrity and delete it from source
+			size_t dstFileSize = static_cast<size_t>(std::filesystem::file_size(filePathInDst));
 			{
-				/// verify integrity
+				// verify integrity
 				if (srcFileSize != dstFileSize)
 				{
-					cout << "Transfer failed. Destination file size does not match with source file size. File will be skipped\n";
-					fs::remove(dstFilePath);
-					return false;
+					cout << "Transfer failed. Destination file size does not match with source file "
+						 << "size. Skipping file...\n";
+					
+					fs::remove(filePathInDst);
+
+					return Result::Code::CorruptTransfer;
 				}
 
-				/// delete file from source
+				// transfer successful!
+				anyFileTransfered = true;
+
+				// delete file from source
 				if (removeFilesFromSource)
-					fs::remove(srcFilePath);
+					fs::remove(filePathInSrc);
 			}
 
-			/// remove folder if empty
-			/// ...
+			// remove folder if empty
+			// ...
 			if (dirPathInSrc.empty())
 			{
-				/// I'm not sure how to approach this
+				// I'm not sure how to approach this
 			}
 		}
 	}
 	catch (std::exception e)
 	{
 		std::cout << "Exception occurred: " << e.what() << "\n";
-		return false;
+		return Result::Code::Exception;
 	}
 
-	return true;
+	return anyFileTransfered ? Result::Code::TransferDone : Result::Code::NoFilesToTransfer;
 }
 
 
@@ -156,25 +201,36 @@ bool Syncer::copyBytes(
 	TransferProgressCallback progressCallback,
 	void*                    progressCallbackOpaquePointer)
 {
-	if (progressCallback(progressCallbackOpaquePointer, 0.0f, 0, 0))
-		return false;
+	if (progressCallback != nullptr)
+	{
+		if (progressCallback(progressCallbackOpaquePointer, 0.0f, 0ull, 0ull))
+			return false;
+	}
 
 	if (fileSize == 0)
+	{
+		if (progressCallback != nullptr)
+		{
+			if (progressCallback(progressCallbackOpaquePointer, 1.0f, 0ull, 0ull))
+				return false;
+		}
+
 		return true;
+	}
 
 	size_t buffer_size = BUFFER_SIZE;
 
-	/// if it's larger, set the buffer size to the size of the data
+	// if it's larger, set the buffer size to the size of the data
 	if (fileSize < buffer_size)
 		buffer_size = fileSize;
 
-	/// start timers
+	// start timers
 	Timer timerProgress;
 	timerProgress.start();
 	Timer timerGlobal;
 	timerGlobal.start();
 
-	/// read data
+	// read data
 	size_t bytesTransferred = 0;
 	const size_t total = fileSize - buffer_size;
 	for (size_t ptr_offset = 0; ptr_offset < total; ptr_offset += buffer_size)
@@ -208,13 +264,13 @@ bool Syncer::copyBytes(
 
 				timerProgress.start();
 
-				/// restart bytes transferred for next reading
+				// restart bytes transferred for next reading
 				bytesTransferred = 0;
 			}
 		}
 	}
 
-	/// read remaining bytes (if any)
+	// read remaining bytes (if any)
 	size_t remainder_size = fileSize % buffer_size;
 	if (remainder_size == 0)
 		remainder_size = buffer_size;

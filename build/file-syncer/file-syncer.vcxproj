@@ -11,12 +11,14 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\src\file-syncer\Result.h" />
     <ClInclude Include="..\..\src\file-syncer\Syncer.h" />
     <ClInclude Include="..\..\src\file-syncer\Timer.h" />
     <ClInclude Include="..\..\src\file-syncer\util.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\file-syncer\main.cpp" />
+    <ClCompile Include="..\..\src\file-syncer\Result.cpp" />
     <ClCompile Include="..\..\src\file-syncer\Syncer.cpp" />
     <ClCompile Include="..\..\src\file-syncer\Timer.cpp" />
   </ItemGroup>
@@ -75,11 +77,11 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;_VERSION="$(Version)";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;_VERSION="$(Version)";_OUTPUTNAME="$(OutputName)";%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\thirdparty\tclap\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <OpenMPSupport>false</OpenMPSupport>
     </ClCompile>
@@ -132,11 +134,11 @@ xcopy "$(LocalInstallDir)" "$(GlobalInstallDir)" /s /Y</Command>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;_VERSION="$(Version)";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;_VERSION="$(Version)";_OUTPUTNAME="$(OutputName)";%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\thirdparty\tclap\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <OpenMPSupport>false</OpenMPSupport>
     </ClCompile>

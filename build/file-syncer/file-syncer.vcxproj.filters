@@ -27,6 +27,9 @@
     <ClInclude Include="..\..\src\file-syncer\util.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\file-syncer\Result.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\file-syncer\Timer.cpp">
@@ -36,6 +39,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\file-syncer\Syncer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\file-syncer\Result.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

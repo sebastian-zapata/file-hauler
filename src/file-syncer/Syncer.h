@@ -1,20 +1,21 @@
 #pragma once
 
+#include "Result.h"
 #include <filesystem>
 
 
-enum class ActionDuplicateFile
+enum class OverwriteMode
 {
-	/// DoNothing,       /// do not transfer the file (do not replace)
-	/// ReplaceIfNewer,  /// only replace if the file being copied is newer
-	AlwaysReplace,      /// replace file in destination no matter what
+	Skip,                 /// do not transfer the file (do not replace)
+	OverwriteIfNewer,     /// only replace if the file being copied is newer
+	AlwaysOverwrite,      /// replace file in destination no matter what
 };
 
 typedef std::filesystem::path Path;
 
 class Syncer
 {
-private:	
+private:
 
 	/// if the progress callback call interval is too small, it won't be able to update the bps accurately.
 	/// please use values greater than 1000 ms..
@@ -31,13 +32,13 @@ private:
 
 public:
 
-	Syncer(const Path& srcDirPath, const Path& dstDirPath);
+	Syncer(const Path& srcDirPath, const Path& dstDirPath, bool verbose = false);
 
 	~Syncer();
 
 public:
 
-	bool sync(bool removeFilesFromSource, ActionDuplicateFile actionDuplicateFile);
+	Result sync(bool removeFilesFromSource, OverwriteMode actionDuplicateFile);
 
 private:
 
@@ -59,6 +60,8 @@ private:
 	const Path& m_srcDirPath;
 
 	const Path& m_dstDirPath;
+
+	bool m_verbose;
 
 };
 
