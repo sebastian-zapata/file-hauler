@@ -120,7 +120,9 @@ Result Syncer::sync(bool removeFilesFromSource, OverwriteMode overwriteMode)
 				if (m_verbose)
 					cout << "Failed to open file: " << filePathInSrc.string() << ". Skipping file...\n";
 
-				return Result::Code::CouldNotOpenSourceFile;
+				continue;
+				
+				/// return Result::Code::CouldNotOpenSourceFile;
 			}
 
 			dstFile = std::ofstream(filePathInDst, std::ios::binary | std::ios::out);
@@ -131,7 +133,8 @@ Result Syncer::sync(bool removeFilesFromSource, OverwriteMode overwriteMode)
 
 				srcFile.close();
 
-				return Result::Code::CouldNotCreateDestinationFile;
+				continue;
+				/// return Result::Code::CouldNotCreateDestinationFile;
 			}
 
 			// transfer bytes in chunks

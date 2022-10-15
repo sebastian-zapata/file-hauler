@@ -3,11 +3,11 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LocalDebuggerWorkingDirectory>$(OutputPath)</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerCommandArguments>-s="//192.168.0.7/shared" -d="F:/scans/shared" -t="move" -o="overwrite-if-newer" --loop --verbose</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>-s="//192.168.0.7/tests" -d="F:/scans/dead_leaf_macro_scan_2" -t="move" -o="overwrite-if-newer" --loop --verbose</LocalDebuggerCommandArguments>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LocalDebuggerWorkingDirectory>$(OutputPath)</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerCommandArguments>-s="//192.168.0.7/shared" -d="F:/scans/shared" -t="move" -o="overwrite-if-newer" --loop --verbose</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>-s="C:\Users\sebas\Downloads\EDSDK_v13.15.20_Windows" -d="//192.168.0.7/EDSDK_v13.15.20_Windows" -t="copy" -o="overwrite-if-newer" --verbose</LocalDebuggerCommandArguments>
   </PropertyGroup>
 </Project>
