@@ -4,7 +4,7 @@
 #include <filesystem>
 
 
-enum class OverwriteMode
+enum class OverwriteAction
 {
 	Skip,                 /// do not transfer the file (do not replace)
 	OverwriteIfNewer,     /// only replace if the file being copied is newer
@@ -32,13 +32,17 @@ private:
 
 public:
 
-	Syncer(const Path& srcDirPath, const Path& dstDirPath, bool verbose = false);
+	Syncer(
+		const Path&                     srcDirPath,
+		const Path&                     dstDirPath,
+		const std::vector<std::string>& fileExtensions,
+		bool                            verbose = false);
 
 	~Syncer();
 
 public:
 
-	Result sync(bool removeFilesFromSource, OverwriteMode actionDuplicateFile);
+	Result sync(bool removeFilesFromSource, OverwriteAction actionDuplicateFile);
 
 private:
 
@@ -60,6 +64,8 @@ private:
 	const Path& m_srcDirPath;
 
 	const Path& m_dstDirPath;
+
+	std::vector<std::string> m_fileExtensions;
 
 	bool m_verbose;
 

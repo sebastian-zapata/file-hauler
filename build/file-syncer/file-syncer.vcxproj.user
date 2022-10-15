@@ -3,11 +3,11 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LocalDebuggerWorkingDirectory>$(OutputPath)</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerCommandArguments>-s="//192.168.0.7/tests" -d="F:/scans/dead_leaf_macro_scan_2" -t="move" -o="overwrite-if-newer" --loop --verbose</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>-s="F:\scans\ivy_macro_scan_1_2_and_3\shared\back\source\raw\light-order" -d="F:\scans\ivy_macro_scan_1_2_and_3\shared\back\source\tif\light-order" -t="move" -o="overwrite-if-newer" -f="tif" -f="cr2" -f="elepepe jeje" -f="123" --verbose</LocalDebuggerCommandArguments>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LocalDebuggerWorkingDirectory>$(OutputPath)</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerCommandArguments>-s="C:\Users\sebas\Downloads\EDSDK_v13.15.20_Windows" -d="//192.168.0.7/EDSDK_v13.15.20_Windows" -t="copy" -o="overwrite-if-newer" --verbose</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>-s="F:\scans\ivy_macro_scan_1_2_and_3\shared\back\source\raw\light-order" -d="F:\scans\ivy_macro_scan_1_2_and_3\shared\back\source\tif\light-order" -t="move" -o="overwrite-if-newer" -f="tif" -f="cr2" -f="elepepe jeje" -f="123" --verbose</LocalDebuggerCommandArguments>
   </PropertyGroup>
 </Project>

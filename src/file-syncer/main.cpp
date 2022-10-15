@@ -5,6 +5,8 @@
 #include <thread>
 #include <chrono>
 #include <tclap/CmdLine.h>
+#include "operators.h"
+#include "util.h"
 
 
 bool processArgs(
@@ -12,9 +14,10 @@ bool processArgs(
 	char* args[],
 	Path& srcDirPath,
 	Path& dstDirPath,
+	std::vector<std::string>& fileExtensions,
 	bool& removeFilesFromSource,
 	bool& loop,
-	OverwriteMode& overwriteMode,
+	OverwriteAction& overwriteMode,
 	bool& verbose);
 
 
@@ -29,9 +32,10 @@ int main(int argc, char* args[])
 
 	Path srcDirPath;
 	Path dstDirPath;
+	std::vector<std::string> fileExtensions;
 	bool removeFilesFromSource = false;
 	bool loop = false;
-	OverwriteMode overwriteMode = OverwriteMode::Skip;
+	OverwriteAction overwriteAction = OverwriteAction::Skip;
 
 	bool verbose = true;
 
@@ -40,7 +44,8 @@ int main(int argc, char* args[])
 	// process cli
 	//
 
-	if (!processArgs(argc, args, srcDirPath, dstDirPath, removeFilesFromSource, loop, overwriteMode, verbose))
+	if (!processArgs(argc, args, srcDirPath, dstDirPath, fileExtensions, removeFilesFromSource, loop,
+		overwriteAction, verbose))
 	{
 		return -1;
 	}
@@ -53,6 +58,13 @@ int main(int argc, char* args[])
 	cout << "----------------------------------------- Settings -----------------------------------------" << "\n";
 	cout << std::left << std::setw(22) << "Source folder: " << srcDirPath.string() << "\n";
 	cout << std::left << std::setw(22) << "Destination folder: " << dstDirPath.string() << "\n";
+	cout << std::left << std::setw(22) << "File extensions: " << fileExtensions << "\n";
+	cout << std::left << std::setw(22) << "Transfer mode: " << (removeFilesFromSource ? "move" : "copy") << "\n";
+	cout << std::left << std::setw(22) << "Overwrite action: " << overwriteAction << "\n";
+	cout << std::left << std::setw(22) << "Run in loop: " << util::yesNo(loop) << "\n";
+	cout << std::left << std::setw(22) << "Verbose: " << util::yesNo(verbose) << "\n";
+
+	cout << "\n";
 	cout << "--------------------------------------------------------------------------------------------" << "\n";
 
 
@@ -60,7 +72,7 @@ int main(int argc, char* args[])
 	// run program
 	//
 
-	Syncer syncer(srcDirPath, dstDirPath, verbose);
+	Syncer syncer(srcDirPath, dstDirPath, fileExtensions, verbose);
 
 	if (loop)
 	{
@@ -70,7 +82,7 @@ int main(int argc, char* args[])
 			if (lastResult != Result::Code::NoFilesToTransfer)
 				cout << "Synchronizing..." << "\r";
 
-			lastResult = syncer.sync(removeFilesFromSource, overwriteMode);
+			lastResult = syncer.sync(removeFilesFromSource, overwriteAction);
 
 			if (lastResult == Result::Code::SourceDirectoryDoesNotExist
 			 || lastResult == Result::Code::DestinationDirectoryDoesNotExist)
@@ -103,7 +115,7 @@ int main(int argc, char* args[])
 	}
 	else
 	{
-		Result result = syncer.sync(removeFilesFromSource, overwriteMode);
+		Result result = syncer.sync(removeFilesFromSource, overwriteAction);
 		cout << "Finished. Result: " << result << "\n";
 		return 0;
 	}
@@ -115,9 +127,10 @@ bool processArgs(
 	char* args[],
 	Path& srcDirPath,
 	Path& dstDirPath,
+	std::vector<std::string>& fileExtensions,
 	bool& removeFilesFromSource,
-	bool& loop ,
-	OverwriteMode& overwriteMode,
+	bool& loop,
+	OverwriteAction& overwriteAction,
 	bool& verbose)
 {
 	using std::cout;
@@ -140,6 +153,11 @@ bool processArgs(
 		ValueArg<string> argDstDirPath("d", "dst", "Path to destination directory", true, "", "string");
 		cmd.add(argDstDirPath);
 
+		// File extensions
+		MultiArg<string> argFileExtensions("f", "file-extensions", "list of file extensions to copy. "
+			"Example: \"tif, jpg, png\" (leave empty to copy all files)", false, "string");
+		cmd.add(argFileExtensions);
+
 		// Transfer mode
 		ValuesConstraint<string> argTransferModeValues({ "move", "copy" });
 		ValueArg<string> argTransferMode("t", "transfer-mode", "Transfer mode", true, "move", &argTransferModeValues);
@@ -147,16 +165,16 @@ bool processArgs(
 
 		// Overwrite mode
 		ValuesConstraint<string> argOverwriteActionValues({ "skip", "overwrite-if-newer", "always-overwrite" });
-		ValueArg<string> argOverwriteAction("o", "overwrite-mode", "Overwrite mode (what to do when a file "
+		ValueArg<string> argOverwriteAction("o", "overwrite-action", "Overwrite action (what to do when a file "
 			"with the same name already exists in destination)", true, "skip", &argOverwriteActionValues);
 		cmd.add(argOverwriteAction);
 
 		// Run in loop
-		TCLAP::SwitchArg argLoop("l", "loop", "Scan and transfer files repeatedly in an infinite loop", false);
+		SwitchArg argLoop("l", "loop", "Scan and transfer files repeatedly in an infinite loop", false);
 		cmd.add(argLoop);
 
 		// Verbose
-		TCLAP::SwitchArg argVerbose("e", "verbose", "", false);
+		SwitchArg argVerbose("e", "verbose", "", false);
 		cmd.add(argVerbose);
 
 		// Parse args
@@ -168,6 +186,9 @@ bool processArgs(
 
 			// Destination directory
 			dstDirPath = argDstDirPath.getValue();
+			
+			// File extensions
+			fileExtensions = argFileExtensions.getValue();
 
 			// Transfer mode
 			removeFilesFromSource = argTransferMode.getValue() == "move";
@@ -181,15 +202,15 @@ bool processArgs(
 			// Overwrite mode
 			if (argOverwriteAction.getValue() == "skip")
 			{
-				overwriteMode = OverwriteMode::Skip;
+				overwriteAction = OverwriteAction::Skip;
 			}
 			else if (argOverwriteAction.getValue() == "overwrite-if-newer")
 			{
-				overwriteMode = OverwriteMode::OverwriteIfNewer;
+				overwriteAction = OverwriteAction::OverwriteIfNewer;
 			}
 			else if (argOverwriteAction.getValue() == "always-overwrite")
 			{
-				overwriteMode = OverwriteMode::AlwaysOverwrite;
+				overwriteAction = OverwriteAction::AlwaysOverwrite;
 			}
 		}
 	}

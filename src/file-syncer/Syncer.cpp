@@ -10,9 +10,10 @@
 #include <chrono>
 
 
-Syncer::Syncer(const Path& srcDirPath, const Path& dstDirPath, bool verbose)
+Syncer::Syncer(const Path& srcDirPath, const Path& dstDirPath, const std::vector<std::string>& fileExtensions, bool verbose)
 	: m_srcDirPath(srcDirPath)
 	, m_dstDirPath(dstDirPath)
+	, m_fileExtensions(fileExtensions)
 	, m_verbose(verbose)
 {
 }
@@ -23,7 +24,7 @@ Syncer::~Syncer()
 }
 
 
-Result Syncer::sync(bool removeFilesFromSource, OverwriteMode overwriteMode)
+Result Syncer::sync(bool removeFilesFromSource, OverwriteAction overwriteAction)
 {
 	//
 	// TODO: verify if file already exists in destination. If so, verify the timestamp and if it's an
@@ -52,7 +53,7 @@ Result Syncer::sync(bool removeFilesFromSource, OverwriteMode overwriteMode)
 		}
 
 		std::vector<Path> srcFilePaths;
-		util::getFilesInFolder(m_srcDirPath, srcFilePaths, {/* all file extensions */ }, false, true);
+		util::getFilesInFolder(m_srcDirPath, srcFilePaths, m_fileExtensions, false, true);
 
 		for (const auto& filePathInSrc : srcFilePaths)
 		{
@@ -65,15 +66,15 @@ Result Syncer::sync(bool removeFilesFromSource, OverwriteMode overwriteMode)
 			// if file in destination already exists:
 			if (fs::exists(filePathInDst))
 			{
-				switch (overwriteMode)
+				switch (overwriteAction)
 				{
-					case OverwriteMode::Skip:
+					case OverwriteAction::Skip:
 					{
 						continue; // skip file, continue to next iteration
 
 						break;
 					}
-					case OverwriteMode::OverwriteIfNewer:
+					case OverwriteAction::OverwriteIfNewer:
 					{
 						bool notNewFile = fs::last_write_time(filePathInDst) >= fs::last_write_time(filePathInSrc);
 					
@@ -82,7 +83,7 @@ Result Syncer::sync(bool removeFilesFromSource, OverwriteMode overwriteMode)
 
 						break;
 					}
-					case OverwriteMode::AlwaysOverwrite:
+					case OverwriteAction::AlwaysOverwrite:
 					default:
 					{
 						// do nothing, continue with the transfer (replace file)

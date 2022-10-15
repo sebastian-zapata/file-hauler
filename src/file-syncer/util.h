@@ -84,4 +84,11 @@ inline std::string to_string(const T a_value, const int n = 6)
 	return out.str();
 }
 
+
+inline std::string yesNo(bool x)
+{
+	return x ? "yes" : "no";
+}
+
+
 }
