@@ -3,11 +3,11 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LocalDebuggerWorkingDirectory>$(OutputPath)</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerCommandArguments>-s="F:\scans\ivy_macro_scan_1_2_and_3\shared\back\source\raw\light-order" -d="F:\scans\ivy_macro_scan_1_2_and_3\shared\back\source\tif\light-order" -t="move" -o="overwrite-if-newer" -f="tif" -f="cr2" -f="elepepe jeje" -f="123" --verbose</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>-s="F:\scans\ivy_macro_scan_1_2_and_3\shared\back\source\raw\light-order" -d="F:\scans\ivy_macro_scan_1_2_and_3\shared\back\source\tif\light-order" -t="move" -o="overwrite-if-newer" -f="tif" --verbose</LocalDebuggerCommandArguments>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LocalDebuggerWorkingDirectory>$(OutputPath)</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerCommandArguments>-s="F:\scans\ivy_macro_scan_1_2_and_3\shared\back\source\raw\light-order" -d="F:\scans\ivy_macro_scan_1_2_and_3\shared\back\source\tif\light-order" -t="move" -o="overwrite-if-newer" -f="tif" -f="cr2" -f="elepepe jeje" -f="123" --verbose</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>-s="F:\scans\ivy_macro_scan_1_2_and_3\shared\back\source\raw\light-order" -d="F:\scans\ivy_macro_scan_1_2_and_3\shared\back\source\tif\light-order" -t="move" -o="overwrite-if-newer" -f="tif" --verbose</LocalDebuggerCommandArguments>
   </PropertyGroup>
 </Project>

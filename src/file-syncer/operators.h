@@ -8,6 +8,12 @@
 template <typename T>
 inline std::ostream& operator<<(std::ostream& stream, const std::vector<T>& rhs)
 {
+	if (rhs.empty())
+	{
+		stream << "empty";
+		return stream;
+	}
+
 	for (auto& value : rhs)
 	{
 		stream << value;
