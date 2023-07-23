@@ -35,3 +35,9 @@ Simple command-line file transfer program written in C++
    -h,  --help
      Displays usage information and exits.
 ```
+
+## Examples
+Move files with the extensions "jpg" and "tif" only. If a file with the same name already exists in the destination, it will be replaced by the new one, but only if the new file is newer. The folder structure will also be copied.
+```console
+FileHauler --src="F:/src" --dst="F:/dst" --transfer-mode="move" --file-extensions="jpg, tif" --overwrite-action="overwrite-if-newer"
+```
