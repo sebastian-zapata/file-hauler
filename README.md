@@ -1,7 +1,9 @@
 # File Hauler
-Simple command-line file transfer program written in C++. What sets this program apart is its ability to maintain the original folder structure while providing the option to filter out unwanted files based on their extension.
+Simple command-line file transfer program written in C++.
 
 This program is extensively utilized in our scanning process at Friendly Shade, and I believe it could be beneficial to others as well.
+
+What sets this program apart is its ability to maintain the original folder structure while providing the option to filter out unwanted files based on their extension.
 
 ![alt text](demo.gif)
 
