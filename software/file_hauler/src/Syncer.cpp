@@ -246,11 +246,11 @@ bool Syncer::copyBytes(
 	const size_t total = fileSize - buffer_size;
 	for (size_t ptr_offset = 0; ptr_offset < total; ptr_offset += buffer_size)
 	{
-		char* data = new char[buffer_size];
+		std::vector<char> data(buffer_size);
 		try
 		{
-			srcFile.read(data, buffer_size);
-			dstFile.write(data, buffer_size);
+			srcFile.read(data.data(), buffer_size);
+			dstFile.write(data.data(), buffer_size);
 		}
 		catch (std::exception e)
 		{
@@ -259,7 +259,6 @@ bool Syncer::copyBytes(
 			std::cout << "\n";
 			return false;
 		}
-		delete[] data;
 
 		bytesTransferred += buffer_size;
 
@@ -287,11 +286,11 @@ bool Syncer::copyBytes(
 		remainder_size = buffer_size;
 	size_t remainder_ptr_offset = fileSize - remainder_size;
 	
-	char* data = new char[remainder_size];
+	std::vector<char> data(remainder_size);
 	try
 	{
-		srcFile.read(data, remainder_size);
-		dstFile.write(data, remainder_size);
+		srcFile.read(data.data(), remainder_size);
+		dstFile.write(data.data(), remainder_size);
 	}
 	catch (std::exception e)
 	{
@@ -300,7 +299,6 @@ bool Syncer::copyBytes(
 		std::cout << "\n";
 		return false;
 	}
-	delete[] data;
 
 	if (progressCallback != nullptr)
 	{
