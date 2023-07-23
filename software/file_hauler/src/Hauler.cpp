@@ -33,12 +33,6 @@ Hauler::~Hauler()
 
 Result Hauler::sync(bool removeFilesFromSource, OverwriteAction overwriteAction)
 {
-	//
-	// TODO: verify if file already exists in destination. If so, verify the timestamp and if it's an
-	// old version of the file, replace it.. Or better yet, let the user decide what to do in those
-	// cases.
-	//
-
 	namespace fs = std::filesystem;
 	using std::cout;
 
