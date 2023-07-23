@@ -1,0 +1,20 @@
+// © 2023 Friendly Shade, Inc.
+// © 2023 Sebastian Zapata
+//
+// This file is part of FileHauler.
+// FileHauler is licensed under the GNU General Public License (GPL), Version 3. If a copy of the GPL
+// was not distributed with this file, you can obtain one at https://www.gnu.org/licenses/gpl-3.0.
+
+#pragma once
+
+#if @INSTALL_LIBRARY_IS_SHARED@ // shared
+	#ifdef FILEHAULER_@LIBRARY_NAME_UPPERCASE@_EXPORTS
+		#define FILEHAULER_@LIBRARY_NAME_UPPERCASE@_API __declspec(dllexport)
+	#else
+		#define FILEHAULER_@LIBRARY_NAME_UPPERCASE@_API __declspec(dllimport)
+	#endif
+#else // static or header-only
+	#define FILEHAULER_@LIBRARY_NAME_UPPERCASE@_API
+#endif
+
+#define FILEHAULER_@LIBRARY_NAME_UPPERCASE@_HEADERONLY @INSTALL_LIBRARY_IS_INTERFACE@

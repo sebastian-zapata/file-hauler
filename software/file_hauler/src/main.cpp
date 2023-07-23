@@ -1,3 +1,10 @@
+// © 2023 Friendly Shade, Inc.
+// © 2023 Sebastian Zapata
+//
+// This file is part of FileHauler.
+// FileHauler is licensed under the GNU General Public License (GPL), Version 3. If a copy of the GPL
+// was not distributed with this file, you can obtain one at https://www.gnu.org/licenses/gpl-3.0.
+
 #include "Syncer.h"
 #include <iostream>
 #include <string>
@@ -7,9 +14,10 @@
 #include <tclap/CmdLine.h>
 #include "operators.h"
 #include "util.h"
+#include "../../../modules/version.hpp"
 
 
-bool processArgs(
+bool parseArgs(
 	int   argc,
 	char* args[],
 	Path& srcDirPath,
@@ -28,7 +36,7 @@ int main(int argc, char* args[])
 	using std::string;
 	using std::vector;
 
-	cout << "Welcome to File Syncer!" << "\n";
+	cout << "Welcome to File Hauler!" << "\n";
 
 	Path srcDirPath;
 	Path dstDirPath;
@@ -41,10 +49,10 @@ int main(int argc, char* args[])
 
 
 	//
-	// process cli
+	// Process arguments
 	//
 
-	if (!processArgs(argc, args, srcDirPath, dstDirPath, fileExtensions, removeFilesFromSource, loop,
+	if (!parseArgs(argc, args, srcDirPath, dstDirPath, fileExtensions, removeFilesFromSource, loop,
 		overwriteAction, verbose))
 	{
 		return -1;
@@ -69,7 +77,7 @@ int main(int argc, char* args[])
 
 
 	//
-	// run program
+	// Run program
 	//
 
 	Syncer syncer(srcDirPath, dstDirPath, fileExtensions, verbose);
@@ -122,7 +130,7 @@ int main(int argc, char* args[])
 }
 
 
-bool processArgs(
+bool parseArgs(
 	int   argc,
 	char* args[],
 	Path& srcDirPath,
@@ -143,7 +151,7 @@ bool processArgs(
 		using namespace TCLAP;
 
 		// Define the command line object.
-		CmdLine cmd("", '=', _OUTPUTNAME, _VERSION);
+		CmdLine cmd("", '=', "FileHauler", FILEHAULER_VERSION_STRING);
 
 		// Source directory
 		ValueArg<string> argSrcDirPath("s", "src", "Path to source directory", true, "", "string");
