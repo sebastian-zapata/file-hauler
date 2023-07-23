@@ -20,7 +20,7 @@ enum class OverwriteAction
 
 typedef std::filesystem::path Path;
 
-class Syncer
+class Hauler
 {
 private:
 
@@ -39,13 +39,13 @@ private:
 
 public:
 
-	Syncer(
+	Hauler(
 		const Path&                     srcDirPath,
 		const Path&                     dstDirPath,
 		const std::vector<std::string>& fileExtensions,
 		bool                            verbose = false);
 
-	~Syncer();
+	~Hauler();
 
 public:
 

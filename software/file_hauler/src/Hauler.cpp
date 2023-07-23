@@ -5,7 +5,7 @@
 // FileHauler is licensed under the GNU General Public License (GPL), Version 3. If a copy of the GPL
 // was not distributed with this file, you can obtain one at https://www.gnu.org/licenses/gpl-3.0.
 
-#include "Syncer.h"
+#include "Hauler.h"
 #include "util.h"
 #include "Timer.h"
 
@@ -17,7 +17,7 @@
 #include <chrono>
 
 
-Syncer::Syncer(const Path& srcDirPath, const Path& dstDirPath, const std::vector<std::string>& fileExtensions, bool verbose)
+Hauler::Hauler(const Path& srcDirPath, const Path& dstDirPath, const std::vector<std::string>& fileExtensions, bool verbose)
 	: m_srcDirPath(srcDirPath)
 	, m_dstDirPath(dstDirPath)
 	, m_fileExtensions(fileExtensions)
@@ -26,12 +26,12 @@ Syncer::Syncer(const Path& srcDirPath, const Path& dstDirPath, const std::vector
 }
 
 
-Syncer::~Syncer()
+Hauler::~Hauler()
 {
 }
 
 
-Result Syncer::sync(bool removeFilesFromSource, OverwriteAction overwriteAction)
+Result Hauler::sync(bool removeFilesFromSource, OverwriteAction overwriteAction)
 {
 	//
 	// TODO: verify if file already exists in destination. If so, verify the timestamp and if it's an
@@ -147,7 +147,7 @@ Result Syncer::sync(bool removeFilesFromSource, OverwriteAction overwriteAction)
 
 			// transfer bytes in chunks
 			size_t srcFileSize = static_cast<size_t>(std::filesystem::file_size(filePathInSrc));
-			if (!copyBytes(srcFile, dstFile, srcFileSize, &Syncer::progressCallback,
+			if (!copyBytes(srcFile, dstFile, srcFileSize, &Hauler::progressCallback,
 				&filePathRelative.string()))
 			{
 				cout << "Failed to copy bytes from" << filePathInSrc.string() << " to "
@@ -205,7 +205,7 @@ Result Syncer::sync(bool removeFilesFromSource, OverwriteAction overwriteAction)
 }
 
 
-bool Syncer::copyBytes(
+bool Hauler::copyBytes(
 	std::istream&            srcFile,
 	std::ofstream&           dstFile,
 	const size_t             fileSize,
@@ -310,7 +310,7 @@ bool Syncer::copyBytes(
 }
 
 
-void Syncer::printTask(const std::string& name, const std::string& detail, const int percentage)
+void Hauler::printTask(const std::string& name, const std::string& detail, const int percentage)
 {
 	using std::cout;
 
@@ -331,7 +331,7 @@ void Syncer::printTask(const std::string& name, const std::string& detail, const
 }
 
 
-bool Syncer::progressCallback(void *opaquePointer, float progress, size_t elapsedMs, size_t bps)
+bool Hauler::progressCallback(void *opaquePointer, float progress, size_t elapsedMs, size_t bps)
 {
 	std::string* detail_p = static_cast<std::string*>(opaquePointer);
 

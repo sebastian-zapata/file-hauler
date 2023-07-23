@@ -5,7 +5,7 @@
 // FileHauler is licensed under the GNU General Public License (GPL), Version 3. If a copy of the GPL
 // was not distributed with this file, you can obtain one at https://www.gnu.org/licenses/gpl-3.0.
 
-#include "Syncer.h"
+#include "Hauler.h"
 #include <iostream>
 #include <string>
 #include <vector>
@@ -80,7 +80,7 @@ int main(int argc, char* args[])
 	// Run program
 	//
 
-	Syncer syncer(srcDirPath, dstDirPath, fileExtensions, verbose);
+	Hauler hauler(srcDirPath, dstDirPath, fileExtensions, verbose);
 
 	if (loop)
 	{
@@ -90,7 +90,7 @@ int main(int argc, char* args[])
 			if (lastResult != Result::Code::NoFilesToTransfer)
 				cout << "Synchronizing..." << "\r";
 
-			lastResult = syncer.sync(removeFilesFromSource, overwriteAction);
+			lastResult = hauler.sync(removeFilesFromSource, overwriteAction);
 
 			if (lastResult == Result::Code::SourceDirectoryDoesNotExist
 			 || lastResult == Result::Code::DestinationDirectoryDoesNotExist)
@@ -123,7 +123,7 @@ int main(int argc, char* args[])
 	}
 	else
 	{
-		Result result = syncer.sync(removeFilesFromSource, overwriteAction);
+		Result result = hauler.sync(removeFilesFromSource, overwriteAction);
 		cout << "Finished. Result: " << result << "\n";
 		return 0;
 	}
