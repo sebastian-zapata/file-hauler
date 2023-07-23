@@ -8,8 +8,8 @@ Simple command-line file transfer program written in C++. What sets this program
    -l,  --loop
      Scan and transfer files repeatedly in an infinite loop
 
-   -o=<skip|overwrite-if-newer|always-overwrite>,  --overwrite-action=<skip
-      |overwrite-if-newer|always-overwrite>
+   -o=<skip|overwrite-if-newer|overwrite>,  --overwrite-action=<skip
+      |overwrite-if-newer|overwrite>
      (required)  Overwrite action (what to do when a file with the same
      name already exists in destination)
 
