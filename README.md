@@ -1,2 +1,2 @@
-# File Syncer
-File transfer manager
+# File Hauler
+Simple command-line file transfer program written in C++
