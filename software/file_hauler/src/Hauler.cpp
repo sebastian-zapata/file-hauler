@@ -84,7 +84,7 @@ Result Hauler::sync(bool removeFilesFromSource, OverwriteAction overwriteAction)
 
 						break;
 					}
-					case OverwriteAction::AlwaysOverwrite:
+					case OverwriteAction::Overwrite:
 					default:
 					{
 						// do nothing, continue with the transfer (replace file)

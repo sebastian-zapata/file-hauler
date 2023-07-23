@@ -172,7 +172,7 @@ bool parseArgs(
 		cmd.add(argTransferMode);
 
 		// Overwrite mode
-		ValuesConstraint<string> argOverwriteActionValues({ "skip", "overwrite-if-newer", "always-overwrite" });
+		ValuesConstraint<string> argOverwriteActionValues({ "skip", "overwrite-if-newer", "overwrite" });
 		ValueArg<string> argOverwriteAction("o", "overwrite-action", "Overwrite action (what to do when a file "
 			"with the same name already exists in destination)", true, "skip", &argOverwriteActionValues);
 		cmd.add(argOverwriteAction);
@@ -216,9 +216,9 @@ bool parseArgs(
 			{
 				overwriteAction = OverwriteAction::OverwriteIfNewer;
 			}
-			else if (argOverwriteAction.getValue() == "always-overwrite")
+			else if (argOverwriteAction.getValue() == "overwrite")
 			{
-				overwriteAction = OverwriteAction::AlwaysOverwrite;
+				overwriteAction = OverwriteAction::Overwrite;
 			}
 		}
 	}

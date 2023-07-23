@@ -42,8 +42,8 @@ inline std::ostream& operator<<(std::ostream& stream, const OverwriteAction& rhs
 	case OverwriteAction::OverwriteIfNewer:
 		stream << "overwrite-if-newer";
 		break;
-	case OverwriteAction::AlwaysOverwrite:
-		stream << "always-overwrite";
+	case OverwriteAction::Overwrite:
+		stream << "overwrite";
 		break;
 	default:
 		stream << "Invalid OverwriteAction enum\n";

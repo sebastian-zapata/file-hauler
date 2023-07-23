@@ -15,7 +15,7 @@ enum class OverwriteAction
 {
 	Skip,                 /// do not transfer the file (do not replace)
 	OverwriteIfNewer,     /// only replace if the file being copied is newer
-	AlwaysOverwrite,      /// replace file in destination no matter what
+	Overwrite,            /// replace file in destination no matter what
 };
 
 typedef std::filesystem::path Path;
