@@ -3,6 +3,8 @@ Simple command-line file transfer program written in C++. What sets this program
 
 This program is extensively utilized in our scanning process at Friendly Shade, and I believe it could be beneficial to others as well.
 
+![alt text](demo.gif)
+
 ## Usage
 ```console
    -e,  --verbose
