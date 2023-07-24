@@ -1,5 +1,5 @@
-// © 2023 Friendly Shade, Inc.
-// © 2023 Sebastian Zapata
+// Â© 2023 Friendly Shade, Inc.
+// Â© 2023 Sebastian Zapata
 //
 // This file is part of FileHauler.
 // FileHauler is licensed under the GNU General Public License (GPL), Version 3. If a copy of the GPL
